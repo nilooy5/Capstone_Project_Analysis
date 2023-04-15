@@ -1,5 +1,5 @@
 ---
-title: "MAternal & Pernatal Data Collection for ACT"
+title: "Maternal & Perinatal Data Collection for ACT"
 author: "Manisha"
 date: "2023-04-03"
 output: html_document
