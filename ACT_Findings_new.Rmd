@@ -1,0 +1,461 @@
+---
+title: "MAternal & Pernatal Data Collection for ACT"
+author: "Manisha"
+date: "2023-04-03"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(plotly)
+
+# setwd("D:/University/Sem_3/Capstone/Data")
+
+df <- read.csv("datasets/MPDC.csv")
+
+df$Cases <- gsub(',','',df$Cases)
+
+BW_less2500gm <- df[df$Indicator=="Liveborn babies weighing less than 2500g",]
+
+dim(BW_less2500gm)
+
+t <- list(
+  family = "Courier New",
+  size = 16,
+  color = "blue")
+t1 <- list(
+  family = "Times New Roman",
+  color = "Indigo",
+  face = "Bold",
+  size = 16
+)
+t2 <- list(
+  family = "Courier New",
+  size = 14,
+  color = "green")
+t3 <- list(family = 'Arial')
+
+plot_ly(BW_less2500gm, x = ~Year, y = ~Rate, type = 'bar') %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Liveborn Babies Weighing Less Than 2500g")
+
+```
+
+
+```{r}
+
+BW_less2500gm_ethnic <- df[df$Indicator=="Proportion of liveborn babies less than 2500g by Aboriginal and Torres Strait Islander status",]
+
+BW_less2500gm_ethnic <- BW_less2500gm_ethnic %>% select(-c(Region, Indicator, Age, Cases,
+                                                           RSE, LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator)) #%>% pivot_wider(names_from = "Characteristic", values_from = "Rate")
+
+dim(BW_less2500gm)
+
+head(BW_less2500gm_ethnic)
+
+ggplot(BW_less2500gm_ethnic, aes(x=Year, y=Rate, group=Characteristic, color=Characteristic))+
+  geom_line()+ geom_point()+
+  labs(title="Rate of Liveborn Babies Weighing Less Than 2500g",
+       y="Rate (%)")+
+  theme_test()+
+  theme(axis.text.x = element_text(angle = 30,  
+                                   vjust = 1, 
+                                   size = 10,
+                                   face = "bold",
+                                   hjust = 1.5),
+        legend.position ="bottom")
+
+# From the total liveborn babies weighing less than 2500g from 2001 to 2020, the trend for non-aboriginal ethnic group has been consistent while for aboriginal ethnic group it has been erratic
+
+```
+
+
+```{r}
+
+Women_age <- df[df$Indicator=="Women who gave birth by age",]
+
+Women_age <- Women_age %>% select(-c(Region, Indicator, Characteristic, RSE, LowerConfidenceInterval,
+                                     UpperConfidenceInterval,
+                                     Denominator)) #%>% pivot_wider(names_from = "Characteristic", values_from = "Rate")
+
+Women_age <- transform(Women_age, Cases=as.numeric(Cases))
+
+library(plotly)
+plot_ly(Women_age, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Age, color = ~Age) %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Women Giving Birth by Age", barmode = 'stack' )
+
+
+
+# From the total liveborn babies weighing less than 2500g from 2001 to 2020, the trend for non-aboriginal ethnic group has been consistent while for aboriginal ethnic group it has been erratic
+
+```
+
+
+```{r}
+first_timer <- df[df$Indicator=="First time mothers by age",]
+
+first_timer1 <- first_timer %>% select(-c(Region, Indicator, Characteristic,Rate,
+                                                           RSE, LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator)) %>% spread(Age,Cases) 
+
+
+colnames(first_timer1) <-c("Year", "a15_to_19", "a20_to_24", "a25_to_29", "a30_to_34", "a35_to_39", "a40plus")
+
+first_timer1 <- transform(first_timer1, Year=as.numeric(Year), a15_to_19 = as.numeric(a15_to_19), a20_to_24=as.numeric(a20_to_24), a25_to_29=as.numeric(a25_to_29), a30_to_34=as.numeric(a30_to_34), a35_to_39=as.numeric(a35_to_39), a40plus=as.numeric(a40plus))
+
+first_timer2 <- first_timer1 %>% mutate(T_cases = a15_to_19 + a20_to_24 + a25_to_29 +
+a30_to_34 + a35_to_39 + a40plus)
+
+plot_ly(first_timer, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Age, color = ~Age) %>%
+      layout(yaxis = list(title = 'Rate (%)'), title="Proportion of First Time Mothers by Age Group", barmode = 'stack')
+
+plot_ly(first_timer, x = ~Year, y = ~Rate, type = 'scatter', mode = "lines+markers",
+        name = ~Age, color = ~Age) %>%
+      layout(yaxis = list(title = 'Rate (%)'), title="Proportion of First Time Mothers by Age Group", barmode = 'stack')
+
+
+```
+
+
+```{r}
+
+Women_method_age <- df[df$Indicator=="Women who gave birth by method of birth and age",]
+
+Women_method_age <- Women_method_age %>% select(-c(Region, Indicator, RSE, LowerConfidenceInterval, UpperConfidenceInterval, Denominator)) 
+
+method_Vaginal <- Women_method_age[Women_method_age$Characteristic=="Vaginal birth",]
+method_Cea <- Women_method_age[Women_method_age$Characteristic=="Caesarean section",]
+
+
+
+ggplot(Women_method_age, aes(x=Year, y= Rate, fill=Age))+
+  geom_bar(stat = "identity", position = position_dodge())+ facet_grid(Characteristic ~ .)+ theme_bw() + labs(title = "Proportion of Women Who Gave Birth by Method of Birth and Age", y="Rate (%)")
+  
+#plot_ly(method_Vaginal, x = ~Year, y = ~Rate, type = 'bar', 
+#                name = ~Age, color = ~Age) %>%
+ #     layout(yaxis = list(title = 'Rate (%)'), title= "Proportion of Women giving birth by Viginal Birth",barmode = 'stack')
+
+
+# prevalence of caesarean section increases as the age increases.
+
+```
+
+```{r}
+
+
+
+```
+
+```{r}
+
+first_method <- df[df$Indicator=="First time mothers by method of birth",]
+
+first_method <- first_method %>% select(-c(Region, Indicator, Age, Cases,
+                                                           RSE, LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator)) 
+
+plot_ly(first_method, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = 'Rate (%)'), title= "Proportion of First Time Mothers by Method of Birth", barmode = 'stack')
+# Proportion of First time mothers by method of birth over the years.
+
+# Unlike the Women giving birth, the prevalence rate for Instrumental vaginal is higher for first time mothers are higher.
+
+# Instrumental delivery is employed to accelerate birth in the presence of suspected or anticipated fetal compromise.
+```
+
+
+```{r}
+
+women_onset <- df[df$Indicator=="Women who gave birth by onset of labour",]
+
+women_onset <- women_onset %>% select(-c(Region, Indicator, Age, Cases,
+                                                           RSE, LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator)) 
+
+plot_ly(women_onset, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = 'Rate (%)'), barmode = 'stack', title="Proportion of Women Giving Birth by Onset of Labour")
+
+```
+
+```{r}
+
+first_labor <- df[df$Indicator=="First time mothers by onset of labour",]
+
+first_labor <- first_labor %>% select(-c(Region, Indicator, Age, Cases,
+                                                           RSE, LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator)) 
+
+plot_ly(first_labor, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = 'Rate (%)'), barmode = 'stack', title="Proportion of First Time Mothers by Onset of Labour")
+# Proportion of First time mothers by onset of labour over the years
+
+#https://www.sciencedirect.com/science/article/abs/pii/S0029784402020471
+
+```
+
+```{r}
+
+Women_ethnic <- df[df$Indicator=="Women who gave birth by Aboriginal and Torres Strait Islander status",]
+
+Women_ethnic <- Women_ethnic %>% select(-c(Region, Indicator, Age, Cases,
+                                                           RSE, LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator)) 
+
+plot_ly(Women_ethnic, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = 'Rate (%)'), title= "Proportion of Mothers Giving Birth by Ethnic Group", barmode = 'stack')
+
+
+
+```
+
+
+```{r}
+gestational_age <- df[df$Indicator=="Babies by gestational age",]
+
+gestational_age <- gestational_age %>% select(-c(Region, Indicator, Age, Cases,
+                                                           RSE, LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator)) #%>% pivot_wider(names_from = "Characteristic", values_from = "Rate")
+
+gestational_age$Characteristic <- factor(gestational_age$Characteristic, levels = c('Less than 37 weeks', '37 to 41 weeks', '42 or more weeks'))
+ggplot(gestational_age, aes(x=Year, y=Rate, group=Characteristic, fill=Characteristic))+
+  geom_bar(position="stack", stat="identity")+
+  scale_fill_manual("legend", values = c("37 to 41 weeks" = "#1E90FF", "42 or more weeks" = "#FF6347", "Less than 37 weeks" = "#008000"))+
+  labs(title="Proportion of Babies Born by Gestational Age",
+       y="Rate (%)")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 30,  
+                                   vjust = 1, 
+                                   size = 10,
+                                   face = "bold",
+                                   hjust = 1.5),
+        legend.position ="bottom")
+head(gestational_age)
+
+df$position <- factor(df$position, levels=c('Less than 37 weeks', '37 to 41 weeks', '42 or more weeks'))
+```
+
+
+```{r}
+gestational_diabetes <- df[df$Indicator=="Women who gave birth by gestational diabetes status",]
+
+gestational_diabetes <- gestational_diabetes %>% select(-c(Region, Indicator, Age, RSE,
+                                                           LowerConfidenceInterval,
+                                                           UpperConfidenceInterval,
+                                                           Denominator))
+gestational_diabetes <- transform(gestational_diabetes, Cases=as.numeric(Cases))
+
+ggplot(gestational_diabetes, aes(x=Year, y=Rate, group=Characteristic, fill=Characteristic))+
+  geom_bar(position="stack", stat="identity")+
+  labs(title="Rate of Women Who Gave Birth by Gestational Diabetes Status",
+       y="Rate (%)")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 30,  
+                                   vjust = 1, 
+                                   size = 10,
+                                   face = "bold",
+                                   hjust = 1.5),
+        legend.position ="bottom")
+
+ggplot(gestational_diabetes, aes(x=Year, y=Cases, group=Characteristic, fill=Characteristic))+
+  geom_bar(stat="identity", position = position_dodge())+
+  labs(title="Number of Women Who Gave Birth by Gestational Diabetes Status",
+       y="Total Cases (Number)")+
+  theme_test()+
+  theme(axis.text.x = element_text(angle = 90,  
+                                   vjust = 1, 
+                                   size = 10,
+                                   face = "bold",
+                                   hjust = 1.5),
+        legend.position ="bottom")
+
+
+```
+
+
+```{r}
+
+Perinatal_DR <- df[df$Indicator=="Perinatal death rate, per 1000 births",]
+
+#Perinatal_DR <- Perinatal_DR %>% select(-c(Region, Indicator, Age, Cases,
+                                                           #RSE, LowerConfidenceInterval,
+                                                           #UpperConfidenceInterval,
+                                                           #Denominator)) 
+
+Perinatal_DR <- transform(Perinatal_DR, Cases=as.numeric(Cases))
+plot_ly(Perinatal_DR, x = ~Year, y = ~Cases, type = 'bar') %>%
+      layout(yaxis = list(title = 'Total Cases (Number)'), title="Total Number of Perinatal Death Over the Years")
+
+plot_ly(Perinatal_DR, x = ~Year, y = ~Rate, type = 'scatter', mode = "lines+markers") %>%
+  layout(yaxis = list(title = 'Rate (%)'), title="proportion of Perinatal Death Rate per 1000 Births Over the Years")
+
+Perinatal_DR <- transform(Perinatal_DR, Year=as.numeric(Year))
+
+lm <- lm(Rate~Year, Perinatal_DR)
+
+summary(lm) 
+
+#proportion of Perinatal death rate per 1000 births over the years.
+```
+
+
+```{r}
+
+smoking <- df[df$Indicator=="Smoking during pregnancy",]
+
+smoking$Cases <- gsub(',','',smoking$Cases)
+
+smoking <- smoking %>% select(-c(Region, Indicator, Age, RSE, LowerConfidenceInterval,
+                                 UpperConfidenceInterval,Denominator)) 
+smoking <- transform(smoking, Cases=as.numeric(Cases))
+
+
+plot_ly(smoking, x = ~Year, y = ~Cases, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = "Total Cases (Number)"), title="Total Number of Women Smoking During Pregnancy" ) 
+
+plot_ly(smoking, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Women Smoking During Pregnancy", barmode = 'stack' )
+
+
+```
+
+```{r}
+
+smoking_ethic <- df[df$Indicator=="Smoking during pregnancy by Aboriginal and Torres Strait Islander status",]
+
+smoking_ethic <- smoking_ethic %>% select(-c(Region, Indicator, Age, Cases,RSE, LowerConfidenceInterval,
+                                 UpperConfidenceInterval,Denominator)) 
+
+
+plot_ly(smoking_ethic, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Women Smoking During Pregnancy by Ethic Group" )
+
+```
+
+
+
+
+
+
+```{r}
+
+smoking_age <- df[df$Indicator=="Smoking during pregnancy by age",]
+
+smoking_age <- smoking_age %>% select(-c(Region, Indicator, Characteristic, RSE, LowerConfidenceInterval,UpperConfidenceInterval,Denominator)) 
+
+smoking_age <- transform(smoking_age, Cases = as.numeric(Cases))
+
+
+plot_ly(smoking_age, x = ~Year, y = ~Cases, type = 'bar', 
+                name = ~Age, color = ~Age) %>%
+      layout(yaxis = list(title = "Total Cases (Number)"), title="Total Number of Women Smoking During Pregnancy by Age" )
+
+plot_ly(smoking_age, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Age, color = ~Age) %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Women Smoking During Pregnancy by Age" )
+
+# interesting to see how although the the the rate of smoking during the pregnancy over the years is still consistently prevalent in age 15 to 19 years followed by 20 to 24 years followed by 25 to 29 years.
+
+```
+
+```{r}
+
+smoking_age_ethnic <- df[df$Indicator=="Smoking during pregnancy by age and Aboriginal and Torres Strait Islander Status" & df$Year!="2001-2005" & df$Year!="2006-2010"& df$Year!="2011-2015"& df$Year!="2016-2020",]
+
+smoking_age_ethnic <- smoking_age_ethnic %>% select(-c(Region, Indicator, RSE, LowerConfidenceInterval,UpperConfidenceInterval,Denominator)) 
+
+smoking_age_ethnic <- transform(smoking_age_ethnic, Cases = as.numeric(Cases))
+
+smoking_age_ethnic_abo <- smoking_age_ethnic[smoking_age_ethnic$Characteristic=="Aboriginal and Torres Strait Islander",]
+
+smoking_age_ethnic_non_abo <- smoking_age_ethnic[smoking_age_ethnic$Characteristic=="Non-Aboriginal or Torres Strait Islander",]
+
+plot_ly(smoking_age_ethnic_abo, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Age, color = ~Age) %>%
+      layout(yaxis = list(title = "Rate (%)"), title=list(text = "Proportion of Women Smoking During Pregnancy in \nAboriginal and Torres Strait Islander Community by Age "), legend = list(title=list(text='Age category'), y=0.5))
+#In aboriginal Community the proportion is higher in age between 20 - 24 and 25 to 29 years. 
+
+plot_ly(smoking_age_ethnic_non_abo, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Age, color = ~Age) %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Women Smoking During Pregnancy in \nNon-aboriginal and Torres Strait Islander Community by Age ", legend = list(title=list(text='Age category'), y=0.5) )
+
+# Interestingly in case of Non-aboriginal and Torres Strait Islander Community, the older ages than 25 years seem to have higher prevalence of women smoking during the pregnancy.
+
+
+# It will be hard to check if the there is any association between the age and smoking during pregnancy and other associated factors like socio-economic factors.
+
+#Smoking prevalence is higher among disadvantaged groups, and disadvantaged smokers may face higher exposure to tobacco's harms. https://nyaspubs.onlinelibrary.wiley.com/doi/abs/10.1111/j.1749-6632.2011.06202.x?casa_token=yC24eGRh53YAAAAA:jiASn6GX9Xv_A6veFZNAKdd_8_Ep8F0kxxhqRjgR4gq5nS-1GZ5kj-QvTu_61X-vZKxbgEvr2FUNCj58Og
+
+#https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0084640
+
+#The prevalence of SIP in New South Wales (NSW) declined from 22.1% (1994) to 13.5% in 2007. However, the largest decrease in SIP rates was among the highest socioeconomic group (67.9% decline), and smaller declines were observed among teenage and remote rural mothers. Maternal age, ethnicity, Aboriginality, area of remoteness and socioeconomic status were independently associated with SIP. The distribution of NSW mothers has changed, with fewer younger mothers and more from an Asian background.
+#https://jech.bmj.com/content/65/8/727
+```
+
+
+
+```{r}
+
+Women_plurarity <- df[df$Indicator=="Women who gave birth by plurality",]
+
+Women_plurarity <- Women_plurarity %>% select(-c(Region, Indicator, RSE, LowerConfidenceInterval,UpperConfidenceInterval,Denominator)) 
+
+Women_plurarity <- transform(Women_plurarity, Cases = as.numeric(Cases))
+
+plot_ly(Women_plurarity, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Women Who Gave Birth by Plurality", barmode = "stack" )
+
+plot_ly(Women_plurarity, x = ~Year, y = ~Cases, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = "Total Cases (Number)"), title="Total Number of Women who Gave Birth by Plurality" )
+
+
+```
+
+
+```{r}
+
+Antenatal <- df[df$Indicator=="Women with 5 or more antenatal visits by Aboriginal and Torres Strait Islander status",]
+
+Antenatal <- Antenatal %>% select(-c(Region, Indicator, RSE, LowerConfidenceInterval,UpperConfidenceInterval,Denominator)) 
+
+Antenatal <- transform(Antenatal, Cases = as.numeric(Cases))
+
+plot_ly(Antenatal, x = ~Year, y = ~Rate, type = 'bar', 
+                name = ~Characteristic, color = ~Characteristic) %>%
+      layout(yaxis = list(title = "Rate (%)"), title="Proportion of Women With 5 or More Antenatal Visits by Ethnic Group" )
+
+ggplot(Antenatal, aes(x=Year, y=Rate, group=Characteristic, fill=Characteristic))+
+  geom_bar(stat="identity", position = position_dodge())+
+  labs(title="Proportion of Women With 5 or More Antenatal Visits by Ethnic Group",
+       y="Rate (%)")+
+  theme_test()+
+  theme(axis.text.x = element_text(angle = 90,  
+                                   vjust = 1, 
+                                   size = 10,
+                                   face = "bold",
+                                   hjust = 1.5),
+        legend.position ="bottom")
+
+# Proportion of women visiting more than 5 or more for antenatal care has decreased.
+
+```
+
+
+
