@@ -131,7 +131,7 @@ df_indigenous <- subset(total_admissions_by_year, Topic %in% c(indigenous,"Indig
 # Create a line plot
 ggplot(df_indigenous, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and  Indigenous status") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and  Indigenous status") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -155,7 +155,7 @@ df_mother_age <- subset(total_admissions_by_year, Topic_disaggregation %in% c(df
 # Create a line plot
 ggplot(df_mother_age, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and Mothers Age") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and Mothers Age") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -175,7 +175,7 @@ df_child_gender <- subset(total_admissions_by_year, Topic_disaggregation %in% c(
 # Create a line plot
 ggplot(df_child_gender, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and Gender") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and Gender") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -195,7 +195,7 @@ df_state <- subset(total_admissions_by_year, Topic_disaggregation %in% c(state_l
 # Create a line plot
 ggplot(df_state, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and State") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and State") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -216,7 +216,7 @@ df_baby_weight <- subset(total_admissions_by_year, Topic_disaggregation %in% c(b
 # Create a line plot
 ggplot(df_baby_weight, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and Birth weight") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and Birth weight") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -239,7 +239,7 @@ df_baby_bmi <- subset(total_admissions_by_year, Topic_disaggregation %in% c(bmi,
 # Create a line plot
 ggplot(df_baby_bmi, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and Body mass index") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and Body mass index") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -284,7 +284,7 @@ df_economic_status <- subset(total_admissions_by_year, Topic_disaggregation %in%
 # Create a line plot
 ggplot(df_economic_status, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and  Economics status") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and  Economics status") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -303,7 +303,7 @@ df_mode_birth <- subset(total_admissions_by_year, Topic_disaggregation %in% c(mo
 # Create a line plot
 ggplot(df_mode_birth, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and  Mode of Birth") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and  Mode of Birth") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -326,7 +326,7 @@ smoked <- subset(total_admissions_by_year, Topic_disaggregation %in% c(smoking_S
 # Create a line plot
 ggplot(smoked, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and  smoking") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and  smoking") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -346,7 +346,7 @@ birth_country <- subset(total_admissions_by_year, Topic_disaggregation %in% c(Bi
 # Create a line plot
 ggplot(birth_country, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and  Country of Birth") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and  Country of Birth") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -366,7 +366,7 @@ plural_df <- subset(total_admissions_by_year, Topic_disaggregation %in% c(plural
 # Create a line plot
 ggplot(plural_df, aes(x = Year, y = reorder(factor(Per_cent), Per_cent), group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and Plurality") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and Plurality") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
@@ -387,7 +387,7 @@ remote_df <- subset(total_admissions_by_year, Topic_disaggregation %in% c(remote
 # Create a line plot
 ggplot(remote_df, aes(x = Year, y = Per_cent, group = Topic_disaggregation, color = Topic_disaggregation)) +
   geom_line() +
-  labs(x = "Year", y = "Total Admissions", title = "Total Admissions by Year and  Remoteness") +
+  labs(x = "Year", y = "Total Admissions %", title = "Total Admissions by Year and  Remoteness") +
   theme_bw() +
   theme(plot.title = element_text(size = 16, face = "bold"),
         axis.text = element_text(size = 12),
